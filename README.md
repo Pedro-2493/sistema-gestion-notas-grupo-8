@@ -1,7 +1,6 @@
 # 📚 Sistema de Gestión de Notas — Grupo 8
 
-> Plataforma web integral para la administración de calificaciones, asistencia y rendimiento académico estudiantil, desarrollada con Spring Boot y React.
-
+> Plataforma web con Spring Boot y React para gestionar calificaciones, asistencia y rendimiento académico estudiantil.
 ---
 
 ## 📋 Tabla de Contenidos
@@ -17,7 +16,7 @@
 
 ---
 
-## Introducción
+## Introducción y Contexto
 
 ### 📌 Descripción del Problema
 
@@ -171,7 +170,7 @@ Si aún no tienes la imagen generada, a continuación se muestra la estructura t
 
 ---
 
-## Instrucciones de Instalación y Ejecución
+## Instrucciones de Instalación y Ejecución para Desarrolladores
 
 Sigue estos pasos para ejecutar el proyecto en tu entorno local de desarrollo.
 
@@ -246,7 +245,7 @@ spring.jpa.show-sql=true
 
 ```bash
 mvn clean install
-mvn spring-boot:run
+./mvn spring-boot:run
 ```
 
 El servidor estará disponible en: **`http://localhost:8080`**
