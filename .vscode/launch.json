@@ -1,0 +1,14 @@
+{
+    "configurations": [
+        {
+            "type": "java",
+            "name": "Spring Boot-SistemaGestionNotasGrupo8Application<sistema-gestion-notas>",
+            "request": "launch",
+            "cwd": "${workspaceFolder}",
+            "mainClass": "com.grupo8.sistema_gestion_notas.SistemaGestionNotasGrupo8Application",
+            "projectName": "sistema-gestion-notas",
+            "args": "",
+            "envFile": "${workspaceFolder}/.env"
+        }
+    ]
+}
