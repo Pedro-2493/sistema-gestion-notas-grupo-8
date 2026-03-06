@@ -1,4 +1,4 @@
-package com.grupo8.sistema_gestion_notas;
+package com.grupo8.sistema_gestion_notas.model.entity;
 
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -15,14 +15,14 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @Builder
 @Entity
-@Table(name = "subject")
-public class subject {
+@Table(name = "teacher")
+public class Teacher {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    private String subjectName;
+    private String teacherName;
 
-    private String description;
+    private String email;
 }
