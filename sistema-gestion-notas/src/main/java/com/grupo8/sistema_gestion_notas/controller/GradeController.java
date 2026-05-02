@@ -1,9 +1,10 @@
-package com.grupo8.sistema_gestion_notas.model.controller;
+package com.grupo8.sistema_gestion_notas.controller;
 
 
 
 import com.grupo8.sistema_gestion_notas.model.entity.Grade;
-import com.grupo8.sistema_gestion_notas.model.service.GradeService;
+import com.grupo8.sistema_gestion_notas.service.GradeService;
+
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 

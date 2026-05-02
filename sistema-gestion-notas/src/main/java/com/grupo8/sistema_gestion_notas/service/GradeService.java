@@ -1,8 +1,9 @@
-package com.grupo8.sistema_gestion_notas.model.service;
+package com.grupo8.sistema_gestion_notas.service;
 
 
 import com.grupo8.sistema_gestion_notas.model.entity.Grade;
-import com.grupo8.sistema_gestion_notas.model.repository.GradeRepository;
+import com.grupo8.sistema_gestion_notas.repository.GradeRepository;
+
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;

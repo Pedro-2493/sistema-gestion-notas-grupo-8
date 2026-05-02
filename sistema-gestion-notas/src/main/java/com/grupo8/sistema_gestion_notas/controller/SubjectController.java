@@ -1,9 +1,10 @@
-package com.grupo8.sistema_gestion_notas.model.controller;
+package com.grupo8.sistema_gestion_notas.controller;
 
 
 
 import com.grupo8.sistema_gestion_notas.model.entity.Subject;
-import com.grupo8.sistema_gestion_notas.model.service.SubjectService;
+import com.grupo8.sistema_gestion_notas.service.SubjectService;
+
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 

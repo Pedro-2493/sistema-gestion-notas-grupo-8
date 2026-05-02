@@ -1,7 +1,8 @@
-package com.grupo8.sistema_gestion_notas.model.service;
+package com.grupo8.sistema_gestion_notas.service;
 
 import com.grupo8.sistema_gestion_notas.model.entity.Teacher;
-import com.grupo8.sistema_gestion_notas.model.repository.TeacherRepository;
+import com.grupo8.sistema_gestion_notas.repository.TeacherRepository;
+
 import org.springframework.stereotype.Service;
 
 import java.util.List;

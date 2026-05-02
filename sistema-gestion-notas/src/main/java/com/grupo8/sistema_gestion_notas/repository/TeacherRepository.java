@@ -1,4 +1,4 @@
-package com.grupo8.sistema_gestion_notas.model.repository;
+package com.grupo8.sistema_gestion_notas.repository;
 
 import com.grupo8.sistema_gestion_notas.model.entity.Teacher;
 import org.springframework.data.jpa.repository.JpaRepository;
