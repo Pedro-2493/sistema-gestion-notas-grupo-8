@@ -1,6 +1,6 @@
 package com.grupo8.sistema_gestion_notas.repository;
 
-import com.grupo8.sistema_gestion_notas.model.entity.Teacher;
+import com.grupo8.sistema_gestion_notas.model.Teacher;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 

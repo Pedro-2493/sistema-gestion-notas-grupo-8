@@ -7,7 +7,6 @@ import org.springframework.stereotype.Service;
 
 import java.util.List;
 
-
 @Service
 public class TeacherService {
 
@@ -27,10 +26,6 @@ public class TeacherService {
 
     public Teacher buscarPorId(Long id) {
         return teacherRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Teacher no encontrado con id: " + id));
-    }
-
-    public List<Teacher> buscarPorNombre(String nombre) {
-        return teacherRepository.findByTeacherNameContainingIgnoreCase(nombre);
+                .orElseThrow(() -> new RuntimeException("Docente no encontrado"));
     }
 }
