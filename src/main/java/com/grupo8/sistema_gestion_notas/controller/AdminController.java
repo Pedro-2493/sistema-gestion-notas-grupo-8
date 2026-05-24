@@ -1,0 +1,46 @@
+package com.grupo8.sistema_gestion_notas.controller;
+
+import com.grupo8.sistema_gestion_notas.model.entity.Admin;
+import com.grupo8.sistema_gestion_notas.service.AdminService;
+
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
+
+@CrossOrigin(origins = "*")
+@RestController
+@RequestMapping("/api/admins")
+public class AdminController {
+
+    private final AdminService adminService;
+
+    public AdminController(AdminService adminService) {
+        this.adminService = adminService;
+    }
+
+    @PostMapping
+    public ResponseEntity<Admin> crear(@RequestBody Admin admin) {
+        return ResponseEntity.ok(adminService.guardar(admin));
+    }
+
+    @GetMapping
+    public ResponseEntity<List<Admin>> listar() {
+        return ResponseEntity.ok(adminService.listar());
+    }
+
+    @GetMapping("/{id}")
+    public ResponseEntity<Admin> buscar(@PathVariable Long id) {
+        return ResponseEntity.ok(adminService.buscarPorId(id));
+    }
+
+    @GetMapping("/buscar")
+    public ResponseEntity<List<Admin>> buscarPorNombre(@RequestParam String nombre) {
+        return ResponseEntity.ok(adminService.buscarPorNombre(nombre));
+    }
+
+    @GetMapping("/email/{email}")
+    public ResponseEntity<Admin> buscarPorEmail(@PathVariable String email) {
+        return ResponseEntity.ok(adminService.buscarPorEmail(email));
+    }
+}
