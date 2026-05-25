@@ -40,4 +40,15 @@ public class SubjectController {
     public ResponseEntity<List<Subject>> buscarPorNombre(@RequestParam String nombre) {
         return ResponseEntity.ok(subjectService.buscarPorNombre(nombre));
     }
+
+    @PutMapping("/{id}")
+    public ResponseEntity<Subject> actualizar(@PathVariable Long id, @RequestBody Subject subject) {
+        return ResponseEntity.ok(subjectService.actualizar(id, subject));
+    }
+
+    @DeleteMapping("/{id}")
+    public ResponseEntity<Void> eliminar(@PathVariable Long id) {
+        subjectService.eliminar(id);
+        return ResponseEntity.noContent().build();
+    }
 }

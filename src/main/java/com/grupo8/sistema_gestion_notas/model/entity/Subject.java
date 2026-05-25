@@ -1,14 +1,8 @@
 package com.grupo8.sistema_gestion_notas.model.entity;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
-import jakarta.persistence.Table;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import jakarta.persistence.*;
+import lombok.*;
+import java.util.List;
 
 @Data
 @NoArgsConstructor
@@ -25,4 +19,14 @@ public class Subject {
     private String subjectName;
 
     private String description;
+
+    private Long teacherId;
+
+    @ManyToMany
+    @JoinTable(name = "subject_student",
+        joinColumns = @JoinColumn(name = "subject_id"),
+        inverseJoinColumns = @JoinColumn(name = "student_id"))
+    @ToString.Exclude
+    @EqualsAndHashCode.Exclude
+    private List<Student> students;
 }
