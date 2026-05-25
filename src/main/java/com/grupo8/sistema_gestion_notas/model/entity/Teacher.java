@@ -25,4 +25,6 @@ public class Teacher {
     private String teacherName;
 
     private String email;
+
+    private String password;
 }

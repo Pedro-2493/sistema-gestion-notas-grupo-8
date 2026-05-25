@@ -4,6 +4,7 @@ import com.grupo8.sistema_gestion_notas.model.entity.Admin;
 import com.grupo8.sistema_gestion_notas.service.AdminService;
 
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -14,13 +15,18 @@ import java.util.List;
 public class AdminController {
 
     private final AdminService adminService;
+    private final PasswordEncoder passwordEncoder;
 
-    public AdminController(AdminService adminService) {
+    public AdminController(AdminService adminService, PasswordEncoder passwordEncoder) {
         this.adminService = adminService;
+        this.passwordEncoder = passwordEncoder;
     }
 
     @PostMapping
     public ResponseEntity<Admin> crear(@RequestBody Admin admin) {
+        if (admin.getPassword() != null && !admin.getPassword().startsWith("{")) {
+            admin.setPassword(passwordEncoder.encode(admin.getPassword()));
+        }
         return ResponseEntity.ok(adminService.guardar(admin));
     }
 

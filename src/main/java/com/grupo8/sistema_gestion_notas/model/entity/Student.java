@@ -20,4 +20,6 @@ public class Student {
     private String email;
 
     private String document;
+
+    private String password;
 }
