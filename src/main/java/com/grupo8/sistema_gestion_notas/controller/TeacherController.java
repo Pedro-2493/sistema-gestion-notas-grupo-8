@@ -43,4 +43,9 @@ public class TeacherController {
     public ResponseEntity<List<Teacher>> buscarPorNombre(@RequestParam String nombre) {
         return ResponseEntity.ok(teacherService.buscarPorNombre(nombre));
     }
+
+    @PutMapping("/{id}/avatar")
+    public ResponseEntity<Teacher> actualizarAvatar(@PathVariable Long id, @RequestBody String avatar) {
+        return ResponseEntity.ok(teacherService.actualizarAvatar(id, avatar));
+    }
 }

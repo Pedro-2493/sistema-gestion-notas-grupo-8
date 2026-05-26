@@ -22,4 +22,8 @@ public class Student {
     private String document;
 
     private String password;
+
+    @Lob
+    @Column(columnDefinition = "TEXT")
+    private String avatar;
 }

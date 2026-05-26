@@ -33,4 +33,10 @@ public class TeacherService {
     public List<Teacher> buscarPorNombre(String nombre) {
         return teacherRepository.findByTeacherNameContainingIgnoreCase(nombre);
     }
+
+    public Teacher actualizarAvatar(Long id, String avatar) {
+        Teacher teacher = buscarPorId(id);
+        teacher.setAvatar(avatar);
+        return teacherRepository.save(teacher);
+    }
 }
