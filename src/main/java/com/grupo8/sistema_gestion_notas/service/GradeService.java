@@ -39,4 +39,15 @@ public class GradeService {
     public List<Grade> buscarPorEstudianteYPeriodo(Long studentId, String period) {
         return gradeRepository.findByStudentIdAndPeriod(studentId, period);
     }
+
+    public Grade actualizar(Long id, Grade gradeDetails) {
+        Grade existing = buscarPorId(id);
+        if (gradeDetails.getValue() != null) {
+            existing.setValue(gradeDetails.getValue());
+        }
+        if (gradeDetails.getPeriod() != null) {
+            existing.setPeriod(gradeDetails.getPeriod());
+        }
+        return gradeRepository.save(existing);
+    }
 }

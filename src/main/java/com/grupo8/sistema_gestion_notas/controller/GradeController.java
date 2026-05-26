@@ -36,6 +36,11 @@ public class GradeController {
         return ResponseEntity.ok(gradeService.buscarPorId(id));
     }
 
+    @PutMapping("/{id}")
+    public ResponseEntity<Grade> actualizar(@PathVariable Long id, @RequestBody Grade grade) {
+        return ResponseEntity.ok(gradeService.actualizar(id, grade));
+    }
+
     @GetMapping("/estudiante/{studentId}")
     public ResponseEntity<List<Grade>> porEstudiante(@PathVariable Long studentId) {
         return ResponseEntity.ok(gradeService.buscarPorEstudiante(studentId));

@@ -31,6 +31,11 @@ public class AttendanceController {
         return ResponseEntity.ok(attendanceService.listar());
     }
 
+    @PutMapping("/{id}")
+    public ResponseEntity<Attendance> actualizar(@PathVariable Long id, @RequestBody Attendance attendance) {
+        return ResponseEntity.ok(attendanceService.actualizar(id, attendance));
+    }
+
     @GetMapping("/estudiante/{studentId}")
     public ResponseEntity<List<Attendance>> porEstudiante(@PathVariable Long studentId) {
         return ResponseEntity.ok(attendanceService.buscarPorEstudiante(studentId));

@@ -35,4 +35,13 @@ public class AttendanceService {
     public List<Attendance> buscarPorEstudianteYMateria(Long studentId, Long subjectId) {
         return attendanceRepository.findByStudentIdAndSubjectId(studentId, subjectId);
     }
+
+    public Attendance actualizar(Long id, Attendance attendanceDetails) {
+        Attendance existing = attendanceRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Asistencia no encontrada"));
+        if (attendanceDetails.getStatus() != null) {
+            existing.setStatus(attendanceDetails.getStatus());
+        }
+        return attendanceRepository.save(existing);
+    }
 }
