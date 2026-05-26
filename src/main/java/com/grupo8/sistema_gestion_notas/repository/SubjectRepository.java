@@ -9,4 +9,5 @@ import java.util.List;
 @Repository
 public interface SubjectRepository extends JpaRepository<Subject, Long> {
     List<Subject> findBySubjectNameContainingIgnoreCase(String subjectName);
+    List<Subject> findByTeacherId(Long teacherId);
 }

@@ -36,6 +36,11 @@ public class SubjectController {
         return ResponseEntity.ok(subjectService.buscarPorId(id));
     }
 
+    @GetMapping("/docente/{teacherId}")
+    public ResponseEntity<List<Subject>> buscarPorDocente(@PathVariable Long teacherId) {
+        return ResponseEntity.ok(subjectService.buscarPorDocente(teacherId));
+    }
+
     @GetMapping("/buscar")
     public ResponseEntity<List<Subject>> buscarPorNombre(@RequestParam String nombre) {
         return ResponseEntity.ok(subjectService.buscarPorNombre(nombre));

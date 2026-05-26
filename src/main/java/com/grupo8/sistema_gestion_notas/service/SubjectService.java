@@ -44,6 +44,10 @@ public class SubjectService {
         return subjectRepository.findBySubjectNameContainingIgnoreCase(nombre);
     }
 
+    public List<Subject> buscarPorDocente(Long teacherId) {
+        return subjectRepository.findByTeacherId(teacherId);
+    }
+
     public Subject actualizar(Long id, Subject datos) {
         Subject existente = buscarPorId(id);
         existente.setSubjectName(datos.getSubjectName());
