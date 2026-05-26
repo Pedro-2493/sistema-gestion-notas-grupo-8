@@ -32,10 +32,4 @@ public class StudentService {
     public List<Student> buscarPorNombre(String nombre) {
         return studentRepository.findByStudentNameContainingIgnoreCase(nombre);
     }
-
-    public Student actualizarAvatar(Long id, String avatar) {
-        Student student = buscarPorId(id);
-        student.setAvatar(avatar);
-        return studentRepository.save(student);
-    }
 }

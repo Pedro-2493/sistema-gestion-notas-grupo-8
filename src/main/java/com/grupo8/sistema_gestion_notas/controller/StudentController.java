@@ -44,9 +44,4 @@ public class StudentController {
     public ResponseEntity<List<Student>> buscarPorNombre(@RequestParam String nombre) {
         return ResponseEntity.ok(studentService.buscarPorNombre(nombre));
     }
-
-    @PutMapping("/{id}/avatar")
-    public ResponseEntity<Student> actualizarAvatar(@PathVariable Long id, @RequestBody String avatar) {
-        return ResponseEntity.ok(studentService.actualizarAvatar(id, avatar));
-    }
 }
