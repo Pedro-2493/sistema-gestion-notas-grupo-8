@@ -44,4 +44,18 @@ public class StudentController {
     public ResponseEntity<List<Student>> buscarPorNombre(@RequestParam String nombre) {
         return ResponseEntity.ok(studentService.buscarPorNombre(nombre));
     }
+
+    @PutMapping("/{id}")
+    public ResponseEntity<Student> actualizar(@PathVariable Long id, @RequestBody Student student) {
+        if (student.getPassword() != null && !student.getPassword().startsWith("{") && !student.getPassword().isEmpty()) {
+            student.setPassword(passwordEncoder.encode(student.getPassword()));
+        }
+        return ResponseEntity.ok(studentService.actualizar(id, student));
+    }
+
+    @DeleteMapping("/{id}")
+    public ResponseEntity<Void> eliminar(@PathVariable Long id) {
+        studentService.eliminar(id);
+        return ResponseEntity.noContent().build();
+    }
 }
