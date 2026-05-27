@@ -32,22 +32,4 @@ public class StudentService {
     public List<Student> buscarPorNombre(String nombre) {
         return studentRepository.findByStudentNameContainingIgnoreCase(nombre);
     }
-
-    public Student actualizar(Long id, Student datos) {
-        Student existente = buscarPorId(id);
-        existente.setStudentName(datos.getStudentName());
-        existente.setEmail(datos.getEmail());
-        existente.setDocument(datos.getDocument());
-        if (datos.getPassword() != null && !datos.getPassword().isEmpty()) {
-            existente.setPassword(datos.getPassword());
-        }
-        return studentRepository.save(existente);
-    }
-
-    public void eliminar(Long id) {
-        if (!studentRepository.existsById(id)) {
-            throw new RuntimeException("Estudiante no encontrado");
-        }
-        studentRepository.deleteById(id);
-    }
 }
