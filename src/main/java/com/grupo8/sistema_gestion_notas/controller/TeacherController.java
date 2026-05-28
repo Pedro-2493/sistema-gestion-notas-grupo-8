@@ -43,4 +43,15 @@ public class TeacherController {
     public ResponseEntity<List<Teacher>> buscarPorNombre(@RequestParam String nombre) {
         return ResponseEntity.ok(teacherService.buscarPorNombre(nombre));
     }
+
+    @PutMapping("/{id}")
+    public ResponseEntity<Teacher> actualizar(@PathVariable Long id, @RequestBody Teacher teacher) {
+        return ResponseEntity.ok(teacherService.actualizar(id, teacher));
+    }
+
+    @DeleteMapping("/{id}")
+    public ResponseEntity<Void> eliminar(@PathVariable Long id) {
+        teacherService.eliminar(id);
+        return ResponseEntity.noContent().build();
+    }
 }

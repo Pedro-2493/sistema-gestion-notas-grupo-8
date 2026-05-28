@@ -3,6 +3,7 @@ package com.grupo8.sistema_gestion_notas.service;
 import com.grupo8.sistema_gestion_notas.model.entity.Teacher;
 import com.grupo8.sistema_gestion_notas.repository.TeacherRepository;
 
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -12,9 +13,11 @@ import java.util.List;
 public class TeacherService {
 
     private final TeacherRepository teacherRepository;
+    private final PasswordEncoder passwordEncoder;
 
-    public TeacherService(TeacherRepository teacherRepository) {
+    public TeacherService(TeacherRepository teacherRepository, PasswordEncoder passwordEncoder) {
         this.teacherRepository = teacherRepository;
+        this.passwordEncoder = passwordEncoder;
     }
 
     public Teacher guardar(Teacher teacher) {
@@ -32,5 +35,23 @@ public class TeacherService {
 
     public List<Teacher> buscarPorNombre(String nombre) {
         return teacherRepository.findByTeacherNameContainingIgnoreCase(nombre);
+    }
+
+    public Teacher actualizar(Long id, Teacher datos) {
+        Teacher existente = buscarPorId(id);
+        if (datos.getTeacherName() != null) {
+            existente.setTeacherName(datos.getTeacherName());
+        }
+        if (datos.getEmail() != null) {
+            existente.setEmail(datos.getEmail());
+        }
+        if (datos.getPassword() != null && !datos.getPassword().isBlank() && !datos.getPassword().startsWith("{")) {
+            existente.setPassword(passwordEncoder.encode(datos.getPassword()));
+        }
+        return teacherRepository.save(existente);
+    }
+
+    public void eliminar(Long id) {
+        teacherRepository.deleteById(id);
     }
 }
