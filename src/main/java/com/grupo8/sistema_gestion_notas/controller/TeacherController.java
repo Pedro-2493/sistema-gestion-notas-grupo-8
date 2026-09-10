@@ -1,14 +1,26 @@
 package com.grupo8.sistema_gestion_notas.controller;
 
-import com.grupo8.sistema_gestion_notas.model.entity.Teacher;
-import com.grupo8.sistema_gestion_notas.service.TeacherService;
-import org.springframework.http.ResponseEntity;
-import org.springframework.security.crypto.password.PasswordEncoder;
-import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
-@CrossOrigin(origins = "*") 
+import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.web.bind.annotation.CrossOrigin;
+import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RestController;
+
+import com.grupo8.sistema_gestion_notas.model.entity.Teacher;
+import com.grupo8.sistema_gestion_notas.service.TeacherService;
+
+@CrossOrigin(origins = "*")
 @RestController
 @RequestMapping("/api/teachers")
 public class TeacherController {
@@ -22,6 +34,7 @@ public class TeacherController {
     }
 
     @PostMapping
+    @PreAuthorize("hasRole('ADMINISTRADOR')")
     public ResponseEntity<Teacher> crear(@RequestBody Teacher teacher) {
         if (teacher.getPassword() != null && !teacher.getPassword().startsWith("{")) {
             teacher.setPassword(passwordEncoder.encode(teacher.getPassword()));
@@ -45,11 +58,13 @@ public class TeacherController {
     }
 
     @PutMapping("/{id}")
+    @PreAuthorize("hasRole('ADMINISTRADOR')")
     public ResponseEntity<Teacher> actualizar(@PathVariable Long id, @RequestBody Teacher teacher) {
         return ResponseEntity.ok(teacherService.actualizar(id, teacher));
     }
 
     @DeleteMapping("/{id}")
+    @PreAuthorize("hasRole('ADMINISTRADOR')")
     public ResponseEntity<Void> eliminar(@PathVariable Long id) {
         teacherService.eliminar(id);
         return ResponseEntity.noContent().build();
