@@ -6,7 +6,7 @@ import com.grupo8.sistema_gestion_notas.service.AdminService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.*;
-
+import org.springframework.security.access.prepost.PreAuthorize;
 import java.util.List;
 
 @CrossOrigin(origins = "*")
@@ -23,6 +23,7 @@ public class AdminController {
     }
 
     @PostMapping
+    @PreAuthorize("hasRole('ADMINISTRADOR')")
     public ResponseEntity<Admin> crear(@RequestBody Admin admin) {
         if (admin.getPassword() != null && !admin.getPassword().startsWith("{")) {
             admin.setPassword(passwordEncoder.encode(admin.getPassword()));

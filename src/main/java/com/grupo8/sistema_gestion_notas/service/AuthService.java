@@ -1,5 +1,8 @@
 package com.grupo8.sistema_gestion_notas.service;
 
+import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.stereotype.Service;
+
 import com.grupo8.sistema_gestion_notas.Config.JwtUtil;
 import com.grupo8.sistema_gestion_notas.dto.AuthResponse;
 import com.grupo8.sistema_gestion_notas.dto.LoginRequest;
@@ -10,8 +13,9 @@ import com.grupo8.sistema_gestion_notas.model.entity.Teacher;
 import com.grupo8.sistema_gestion_notas.repository.AdminRepository;
 import com.grupo8.sistema_gestion_notas.repository.StudentRepository;
 import com.grupo8.sistema_gestion_notas.repository.TeacherRepository;
-import org.springframework.security.crypto.password.PasswordEncoder;
-import org.springframework.stereotype.Service;
+
+import java.util.function.Predicate;
+import java.util.regex.Pattern;
 
 @Service
 public class AuthService {
@@ -21,6 +25,14 @@ public class AuthService {
     private final AdminRepository adminRepository;
     private final PasswordEncoder passwordEncoder;
     private final JwtUtil jwtUtil;
+
+    private static final Predicate<RegisterRequest> tieneNombre =
+            r -> r.nombre() != null && !r.nombre().isBlank();
+    private static final Predicate<RegisterRequest> tieneEmailValido =
+            r -> r.email() != null && r.email().contains("@");
+    private static final Predicate<RegisterRequest> tienePasswordSegura = r ->
+            r.password() != null &&
+            Pattern.matches("^(?=.*[A-Z])(?=.*[!@#$%^&*(),.?\":{}|<>]).{8,}$", r.password());
 
     public AuthService(StudentRepository studentRepository, TeacherRepository teacherRepository,
                        AdminRepository adminRepository, PasswordEncoder passwordEncoder, JwtUtil jwtUtil) {
@@ -71,24 +83,13 @@ public class AuthService {
     }
 
     public AuthResponse register(RegisterRequest request) {
-        if (request.email() == null || request.password() == null || request.nombre() == null || request.rol() == null) {
-            throw new RuntimeException("Todos los campos son obligatorios");
-        }
+        validarRegistro(request);
 
-        String encodedPassword = passwordEncoder.encode(request.password());
-
-        return switch (request.rol()) {
-            case "estudiante" -> registerStudent(request, encodedPassword);
-            case "docente" -> registerTeacher(request, encodedPassword);
-            case "administrador" -> registerAdmin(request, encodedPassword);
-            default -> throw new RuntimeException("Rol inválido: " + request.rol());
-        };
-    }
-
-    private AuthResponse registerStudent(RegisterRequest request, String encodedPassword) {
         if (studentRepository.findByEmail(request.email()).isPresent()) {
             throw new RuntimeException("El email ya está registrado");
         }
+
+        String encodedPassword = passwordEncoder.encode(request.password());
         Student student = Student.builder()
                 .studentName(request.nombre())
                 .email(request.email())
@@ -96,32 +97,15 @@ public class AuthService {
                 .document("Pendiente")
                 .build();
         student = studentRepository.save(student);
+
         String token = jwtUtil.generateToken(student.getEmail(), "estudiante", student.getId(), student.getStudentName());
         return new AuthResponse(token, student.getEmail(), "estudiante", student.getId(), student.getStudentName());
     }
 
-    private AuthResponse registerTeacher(RegisterRequest request, String encodedPassword) {
-        Teacher teacher = Teacher.builder()
-                .teacherName(request.nombre())
-                .email(request.email())
-                .password(encodedPassword)
-                .build();
-        teacher = teacherRepository.save(teacher);
-        String token = jwtUtil.generateToken(teacher.getEmail(), "docente", teacher.getId(), teacher.getTeacherName());
-        return new AuthResponse(token, teacher.getEmail(), "docente", teacher.getId(), teacher.getTeacherName());
-    }
-
-    private AuthResponse registerAdmin(RegisterRequest request, String encodedPassword) {
-        if (adminRepository.findByEmail(request.email()).isPresent()) {
-            throw new RuntimeException("El email ya está registrado");
+    private void validarRegistro(RegisterRequest request) {
+        Predicate<RegisterRequest> esValido = tieneNombre.and(tieneEmailValido).and(tienePasswordSegura);
+        if (!esValido.test(request)) {
+            throw new RuntimeException("Datos de registro inválidos: nombre requerido, email válido, password de mínimo 8 caracteres con mayúscula y carácter especial");
         }
-        Admin admin = Admin.builder()
-                .adminName(request.nombre())
-                .email(request.email())
-                .password(encodedPassword)
-                .build();
-        admin = adminRepository.save(admin);
-        String token = jwtUtil.generateToken(admin.getEmail(), "administrador", admin.getId(), admin.getAdminName());
-        return new AuthResponse(token, admin.getEmail(), "administrador", admin.getId(), admin.getAdminName());
     }
 }
