@@ -9,6 +9,7 @@
 - [Objetivos](#objetivos)
 - [Alcance del Proyecto](#alcance-del-proyecto)
 - [Tecnologías y Herramientas](#tecnologías-y-herramientas-tech-stack)
+- [Seguridad](#seguridad)
 - [Integrantes del Equipo](#integrantes-del-equipo)
 - [Diagrama de Clases del Dominio](#diagrama-de-clases-del-dominio-v1)
 - [Instrucciones de Instalación y Ejecución](#instrucciones-de-instalación-y-ejecución)
@@ -121,6 +122,37 @@ Los siguientes elementos **no serán desarrollados** en esta primera versión:
 | Draw.io                 | Diseño de diagramas de dominio y arquitectura    |
 
 > **Nota sobre el paquete:** El nombre original `com.grupo8.sistema-gestion-notas` es inválido en Java. Este proyecto utiliza `com.grupo8.sistema_gestion_notas` como identificador del paquete.
+
+---
+
+## Seguridad
+
+Este proyecto ha pasado por un proceso de auditoría de seguridad, documentado en el historial de commits.
+
+### Endpoints públicos (sin autenticación)
+
+| Endpoint | Descripción |
+|----------|-------------|
+| `POST /api/auth/login` | Inicio de sesión |
+| `POST /api/auth/register` | Registro de nuevos usuarios — siempre crea una cuenta de tipo **estudiante**, sin importar los datos enviados |
+| `/swagger-ui/**`, `/api-docs/**` | Documentación interactiva de la API |
+
+> ⚠️ Swagger UI se deja público intencionalmente en este entorno de portafolio/demo, para que cualquiera pueda explorar la API sin herramientas adicionales. **En un entorno de producción real, esta ruta debería cerrarse.**
+
+### Endpoints protegidos (requieren JWT)
+
+Todo lo que no esté en la tabla anterior requiere un header `Authorization: Bearer <token>`, obtenido tras iniciar sesión.
+
+Adicionalmente, la creación, edición y eliminación de **docentes** y **administradores** exige que el token pertenezca a un usuario con rol `ADMINISTRADOR` (`@PreAuthorize`).
+
+### Hallazgos corregidos
+
+| # | Hallazgo | Estado |
+|---|----------|--------|
+| 1 | Toda la API estaba abierta pese a tener JWT configurado (`permitAll()` global) | ✅ Corregido |
+| 2 | El registro público permitía elegir libremente el rol (`estudiante`, `docente`, `administrador`), incluyendo crear cuentas admin sin autorización | ✅ Corregido |
+
+> El detalle técnico de cada corrección está en los commits `fix(security): ...` del historial de Git.
 
 ---
 
@@ -245,7 +277,7 @@ spring.jpa.show-sql=true
 
 ```bash
 mvn clean install
-./mvn spring-boot:run
+./mvnw spring-boot:run
 ```
 
 El servidor estará disponible en: **`http://localhost:8080`**
@@ -285,4 +317,4 @@ GET http://localhost:8080/actuator/health
 
 ---
 
-> 📁 Proyecto desarrollado por **Grupo 8** | Ingeniería de Sistemas
+> 📁 Proyecto desarrollado por **Grupo 8** | Técnico Laboral en Desarrollo de Software
