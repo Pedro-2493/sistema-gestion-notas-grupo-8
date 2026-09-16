@@ -11,12 +11,15 @@ import java.util.List;
 public class AdminService {
 
     private final AdminRepository adminRepository;
+    private final PasswordHasher passwordHasher;
 
-    public AdminService(AdminRepository adminRepository) {
+    public AdminService(AdminRepository adminRepository, PasswordHasher passwordHasher) {
         this.adminRepository = adminRepository;
+        this.passwordHasher = passwordHasher;
     }
 
     public Admin guardar(Admin admin) {
+        admin.setPassword(passwordHasher.hashearSiEsNecesario(admin.getPassword()));
         return adminRepository.save(admin);
     }
 
