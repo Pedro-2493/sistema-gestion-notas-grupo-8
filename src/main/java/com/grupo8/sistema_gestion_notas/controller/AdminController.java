@@ -1,13 +1,20 @@
 package com.grupo8.sistema_gestion_notas.controller;
 
-import com.grupo8.sistema_gestion_notas.model.entity.Admin;
-import com.grupo8.sistema_gestion_notas.service.AdminService;
+import java.util.List;
 
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.crypto.password.PasswordEncoder;
-import org.springframework.web.bind.annotation.*;
 import org.springframework.security.access.prepost.PreAuthorize;
-import java.util.List;
+import org.springframework.web.bind.annotation.CrossOrigin;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RestController;
+
+import com.grupo8.sistema_gestion_notas.model.entity.Admin;
+import com.grupo8.sistema_gestion_notas.service.AdminService;
 
 @CrossOrigin(origins = "*")
 @RestController
@@ -15,21 +22,17 @@ import java.util.List;
 public class AdminController {
 
     private final AdminService adminService;
-    private final PasswordEncoder passwordEncoder;
+    
 
-    public AdminController(AdminService adminService, PasswordEncoder passwordEncoder) {
+    public AdminController(AdminService adminService) {
         this.adminService = adminService;
-        this.passwordEncoder = passwordEncoder;
     }
 
-    @PostMapping
-    @PreAuthorize("hasRole('ADMINISTRADOR')")
-    public ResponseEntity<Admin> crear(@RequestBody Admin admin) {
-        if (admin.getPassword() != null && !admin.getPassword().startsWith("{")) {
-            admin.setPassword(passwordEncoder.encode(admin.getPassword()));
-        }
-        return ResponseEntity.ok(adminService.guardar(admin));
-    }
+  @PostMapping
+@PreAuthorize("hasRole('ADMINISTRADOR')")
+public ResponseEntity<Admin> crear(@RequestBody Admin admin) {
+    return ResponseEntity.ok(adminService.guardar(admin));
+}
 
     @GetMapping
     public ResponseEntity<List<Admin>> listar() {

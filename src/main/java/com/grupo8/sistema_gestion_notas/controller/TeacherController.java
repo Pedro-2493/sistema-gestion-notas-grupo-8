@@ -26,19 +26,16 @@ import com.grupo8.sistema_gestion_notas.service.TeacherService;
 public class TeacherController {
 
     private final TeacherService teacherService;
-    private final PasswordEncoder passwordEncoder;
 
-    public TeacherController(TeacherService teacherService, PasswordEncoder passwordEncoder) {
+
+    public TeacherController(TeacherService teacherService) {
         this.teacherService = teacherService;
-        this.passwordEncoder = passwordEncoder;
+        
     }
 
     @PostMapping
     @PreAuthorize("hasRole('ADMINISTRADOR')")
     public ResponseEntity<Teacher> crear(@RequestBody Teacher teacher) {
-        if (teacher.getPassword() != null && !teacher.getPassword().startsWith("{")) {
-            teacher.setPassword(passwordEncoder.encode(teacher.getPassword()));
-        }
         return ResponseEntity.ok(teacherService.guardar(teacher));
     }
 

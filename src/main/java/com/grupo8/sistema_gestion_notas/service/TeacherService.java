@@ -1,26 +1,25 @@
 package com.grupo8.sistema_gestion_notas.service;
 
-import com.grupo8.sistema_gestion_notas.model.entity.Teacher;
-import com.grupo8.sistema_gestion_notas.repository.TeacherRepository;
-
-import org.springframework.security.crypto.password.PasswordEncoder;
-import org.springframework.stereotype.Service;
-
 import java.util.List;
 
+import org.springframework.stereotype.Service;
+
+import com.grupo8.sistema_gestion_notas.model.entity.Teacher;
+import com.grupo8.sistema_gestion_notas.repository.TeacherRepository;
 
 @Service
 public class TeacherService {
 
     private final TeacherRepository teacherRepository;
-    private final PasswordEncoder passwordEncoder;
+    private final PasswordHasher passwordHasher;
 
-    public TeacherService(TeacherRepository teacherRepository, PasswordEncoder passwordEncoder) {
+    public TeacherService(TeacherRepository teacherRepository, PasswordHasher passwordHasher) {
         this.teacherRepository = teacherRepository;
-        this.passwordEncoder = passwordEncoder;
+        this.passwordHasher = passwordHasher;
     }
 
     public Teacher guardar(Teacher teacher) {
+        teacher.setPassword(passwordHasher.hashearSiEsNecesario(teacher.getPassword()));
         return teacherRepository.save(teacher);
     }
 
@@ -45,8 +44,8 @@ public class TeacherService {
         if (datos.getEmail() != null) {
             existente.setEmail(datos.getEmail());
         }
-        if (datos.getPassword() != null && !datos.getPassword().isBlank() && !datos.getPassword().startsWith("{")) {
-            existente.setPassword(passwordEncoder.encode(datos.getPassword()));
+        if (datos.getPassword() != null && !datos.getPassword().isBlank()) {
+            existente.setPassword(passwordHasher.hashearSiEsNecesario(datos.getPassword()));
         }
         return teacherRepository.save(existente);
     }

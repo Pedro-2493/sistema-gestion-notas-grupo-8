@@ -11,12 +11,15 @@ import java.util.List;
 public class StudentService {
 
     private final StudentRepository studentRepository;
+    private final PasswordHasher passwordHasher;
 
-    public StudentService(StudentRepository studentRepository) {
+    public StudentService(StudentRepository studentRepository, PasswordHasher passwordHasher) {
         this.studentRepository = studentRepository;
+        this.passwordHasher = passwordHasher;
     }
 
     public Student guardar(Student student) {
+        student.setPassword(passwordHasher.hashearSiEsNecesario(student.getPassword()));
         return studentRepository.save(student);
     }
 
@@ -39,7 +42,7 @@ public class StudentService {
         existente.setEmail(datos.getEmail());
         existente.setDocument(datos.getDocument());
         if (datos.getPassword() != null && !datos.getPassword().isEmpty()) {
-            existente.setPassword(datos.getPassword());
+            existente.setPassword(passwordHasher.hashearSiEsNecesario(datos.getPassword()));
         }
         return studentRepository.save(existente);
     }
