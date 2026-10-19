@@ -4,6 +4,8 @@ import java.util.List;
 
 import org.springframework.stereotype.Service;
 
+import com.grupo8.sistema_gestion_notas.dto.TeacherDTO;
+import com.grupo8.sistema_gestion_notas.dto.TeacherRequest;
 import com.grupo8.sistema_gestion_notas.model.entity.Teacher;
 import com.grupo8.sistema_gestion_notas.repository.TeacherRepository;
 
@@ -18,39 +20,54 @@ public class TeacherService {
         this.passwordHasher = passwordHasher;
     }
 
-    public Teacher guardar(Teacher teacher) {
-        teacher.setPassword(passwordHasher.hashearSiEsNecesario(teacher.getPassword()));
-        return teacherRepository.save(teacher);
+    public TeacherDTO crear(TeacherRequest request) {
+        Teacher teacher = new Teacher();
+        teacher.setTeacherName(request.teacherName());
+        teacher.setEmail(request.email());
+        teacher.setPassword(passwordHasher.hashearSiEsNecesario(request.password()));
+        return toDTO(teacherRepository.save(teacher));
     }
 
-    public List<Teacher> listar() {
-        return teacherRepository.findAll();
+    public List<TeacherDTO> listar() {
+        return teacherRepository.findAll().stream()
+                .map(this::toDTO)
+                .toList();
     }
 
-    public Teacher buscarPorId(Long id) {
-        return teacherRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Teacher no encontrado con id: " + id));
+    public TeacherDTO buscarPorId(Long id) {
+        return toDTO(buscarEntidadPorId(id));
     }
 
-    public List<Teacher> buscarPorNombre(String nombre) {
-        return teacherRepository.findByTeacherNameContainingIgnoreCase(nombre);
+    public List<TeacherDTO> buscarPorNombre(String nombre) {
+        return teacherRepository.findByTeacherNameContainingIgnoreCase(nombre).stream()
+                .map(this::toDTO)
+                .toList();
     }
 
-    public Teacher actualizar(Long id, Teacher datos) {
-        Teacher existente = buscarPorId(id);
-        if (datos.getTeacherName() != null) {
-            existente.setTeacherName(datos.getTeacherName());
+    public TeacherDTO actualizar(Long id, TeacherRequest datos) {
+        Teacher existente = buscarEntidadPorId(id);
+        if (datos.teacherName() != null) {
+            existente.setTeacherName(datos.teacherName());
         }
-        if (datos.getEmail() != null) {
-            existente.setEmail(datos.getEmail());
+        if (datos.email() != null) {
+            existente.setEmail(datos.email());
         }
-        if (datos.getPassword() != null && !datos.getPassword().isBlank()) {
-            existente.setPassword(passwordHasher.hashearSiEsNecesario(datos.getPassword()));
+        if (datos.password() != null && !datos.password().isBlank()) {
+            existente.setPassword(passwordHasher.hashearSiEsNecesario(datos.password()));
         }
-        return teacherRepository.save(existente);
+        return toDTO(teacherRepository.save(existente));
     }
 
     public void eliminar(Long id) {
         teacherRepository.deleteById(id);
+    }
+
+    private Teacher buscarEntidadPorId(Long id) {
+        return teacherRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Teacher no encontrado con id: " + id));
+    }
+
+    private TeacherDTO toDTO(Teacher t) {
+        return new TeacherDTO(t.getId(), t.getTeacherName(), t.getEmail());
     }
 }

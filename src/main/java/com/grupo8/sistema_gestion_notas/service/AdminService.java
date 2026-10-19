@@ -1,11 +1,13 @@
 package com.grupo8.sistema_gestion_notas.service;
 
-import com.grupo8.sistema_gestion_notas.model.entity.Admin;
-import com.grupo8.sistema_gestion_notas.repository.AdminRepository;
+import java.util.List;
 
 import org.springframework.stereotype.Service;
 
-import java.util.List;
+import com.grupo8.sistema_gestion_notas.dto.AdminDTO;
+import com.grupo8.sistema_gestion_notas.dto.AdminRequest;
+import com.grupo8.sistema_gestion_notas.model.entity.Admin;
+import com.grupo8.sistema_gestion_notas.repository.AdminRepository;
 
 @Service
 public class AdminService {
@@ -18,26 +20,42 @@ public class AdminService {
         this.passwordHasher = passwordHasher;
     }
 
-    public Admin guardar(Admin admin) {
-        admin.setPassword(passwordHasher.hashearSiEsNecesario(admin.getPassword()));
-        return adminRepository.save(admin);
+    public AdminDTO crear(AdminRequest request) {
+        Admin admin = new Admin();
+        admin.setAdminName(request.adminName());
+        admin.setEmail(request.email());
+        admin.setPassword(passwordHasher.hashearSiEsNecesario(request.password()));
+        return toDTO(adminRepository.save(admin));
     }
 
-    public List<Admin> listar() {
-        return adminRepository.findAll();
+    public List<AdminDTO> listar() {
+        return adminRepository.findAll().stream()
+                .map(this::toDTO)
+                .toList();
     }
 
-    public Admin buscarPorId(Long id) {
+    public AdminDTO buscarPorId(Long id) {
+        return toDTO(buscarEntidadPorId(id));
+    }
+
+    public AdminDTO buscarPorEmail(String email) {
+        return adminRepository.findByEmail(email)
+                .map(this::toDTO)
+                .orElseThrow(() -> new RuntimeException("Admin no encontrado con email: " + email));
+    }
+
+    public List<AdminDTO> buscarPorNombre(String nombre) {
+        return adminRepository.findByAdminNameContainingIgnoreCase(nombre).stream()
+                .map(this::toDTO)
+                .toList();
+    }
+
+    private Admin buscarEntidadPorId(Long id) {
         return adminRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Admin no encontrado con id: " + id));
     }
 
-    public Admin buscarPorEmail(String email) {
-        return adminRepository.findByEmail(email)
-                .orElseThrow(() -> new RuntimeException("Admin no encontrado con email: " + email));
-    }
-
-    public List<Admin> buscarPorNombre(String nombre) {
-        return adminRepository.findByAdminNameContainingIgnoreCase(nombre);
+    private AdminDTO toDTO(Admin a) {
+        return new AdminDTO(a.getId(), a.getAdminName(), a.getEmail());
     }
 }

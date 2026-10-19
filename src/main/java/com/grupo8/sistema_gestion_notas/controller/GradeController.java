@@ -1,16 +1,22 @@
 package com.grupo8.sistema_gestion_notas.controller;
 
-
-
-import com.grupo8.sistema_gestion_notas.model.entity.Grade;
-import com.grupo8.sistema_gestion_notas.service.GradeService;
-
-import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.*;
-
 import java.util.List;
 
-@CrossOrigin(origins = "*") 
+import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RestController;
+
+import com.grupo8.sistema_gestion_notas.dto.GradeDTO;
+import com.grupo8.sistema_gestion_notas.dto.GradeRequest;
+import com.grupo8.sistema_gestion_notas.service.GradeService;
+
 @RestController
 @RequestMapping("/api/grades")
 public class GradeController {
@@ -22,32 +28,39 @@ public class GradeController {
     }
 
     @PostMapping
-    public ResponseEntity<Grade> crear(@RequestBody Grade grade) {
-        return ResponseEntity.ok(gradeService.guardar(grade));
+    @PreAuthorize("hasRole('TEACHER') or hasRole('ADMINISTRADOR')")
+    public ResponseEntity<GradeDTO> crear(@RequestBody GradeRequest request) {
+        return ResponseEntity.ok(gradeService.crear(request));
     }
 
     @GetMapping
-    public ResponseEntity<List<Grade>> listar() {
+    @PreAuthorize("hasRole('TEACHER') or hasRole('ADMINISTRADOR')")
+    public ResponseEntity<List<GradeDTO>> listar() {
         return ResponseEntity.ok(gradeService.listar());
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<Grade> buscar(@PathVariable Long id) {
+    public ResponseEntity<GradeDTO> buscar(@PathVariable Long id) {
         return ResponseEntity.ok(gradeService.buscarPorId(id));
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<Grade> actualizar(@PathVariable Long id, @RequestBody Grade grade) {
-        return ResponseEntity.ok(gradeService.actualizar(id, grade));
+    @PreAuthorize("hasRole('TEACHER') or hasRole('ADMINISTRADOR')")
+    public ResponseEntity<GradeDTO> actualizar(@PathVariable Long id, @RequestBody GradeRequest request) {
+        return ResponseEntity.ok(gradeService.actualizar(id, request));
     }
 
     @GetMapping("/estudiante/{studentId}")
-    public ResponseEntity<List<Grade>> porEstudiante(@PathVariable Long studentId) {
+    @PreAuthorize("hasRole('TEACHER') or hasRole('ADMINISTRADOR') or "
+            + "(hasRole('ESTUDIANTE') and #studentId == authentication.principal.id())")
+    public ResponseEntity<List<GradeDTO>> porEstudiante(@PathVariable Long studentId) {
         return ResponseEntity.ok(gradeService.buscarPorEstudiante(studentId));
     }
 
     @GetMapping("/estudiante/{studentId}/periodo")
-    public ResponseEntity<List<Grade>> porEstudianteYPeriodo(
+    @PreAuthorize("hasRole('TEACHER') or hasRole('ADMINISTRADOR') or "
+            + "(hasRole('ESTUDIANTE') and #studentId == authentication.principal.id())")
+    public ResponseEntity<List<GradeDTO>> porEstudianteYPeriodo(
             @PathVariable Long studentId,
             @RequestParam String period) {
         return ResponseEntity.ok(gradeService.buscarPorEstudianteYPeriodo(studentId, period));

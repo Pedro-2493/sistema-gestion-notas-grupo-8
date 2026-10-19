@@ -1,5 +1,7 @@
 package com.grupo8.sistema_gestion_notas.service;
 
+import com.grupo8.sistema_gestion_notas.dto.StudentDTO;
+import com.grupo8.sistema_gestion_notas.dto.StudentRequest;
 import com.grupo8.sistema_gestion_notas.model.entity.Student;
 import com.grupo8.sistema_gestion_notas.repository.StudentRepository;
 
@@ -18,33 +20,41 @@ public class StudentService {
         this.passwordHasher = passwordHasher;
     }
 
-    public Student guardar(Student student) {
-        student.setPassword(passwordHasher.hashearSiEsNecesario(student.getPassword()));
-        return studentRepository.save(student);
+    public StudentDTO crear(StudentRequest request) {
+        Student student = new Student();
+        student.setStudentName(request.studentName());
+        student.setEmail(request.email());
+        student.setDocument(request.document());
+        student.setPassword(passwordHasher.hashearSiEsNecesario(request.password()));
+        Student guardado = studentRepository.save(student);
+        return toDTO(guardado);
     }
 
-    public List<Student> listar() {
-        return studentRepository.findAll();
+    public List<StudentDTO> listar() {
+        return studentRepository.findAll().stream()
+                .map(this::toDTO)
+                .toList();
     }
 
-    public Student buscarPorId(Long id) {
-        return studentRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Estudiante no encontrado"));
+    public StudentDTO buscarPorId(Long id) {
+        return toDTO(buscarEntidadPorId(id));
     }
 
-    public List<Student> buscarPorNombre(String nombre) {
-        return studentRepository.findByStudentNameContainingIgnoreCase(nombre);
+    public List<StudentDTO> buscarPorNombre(String nombre) {
+        return studentRepository.findByStudentNameContainingIgnoreCase(nombre).stream()
+                .map(this::toDTO)
+                .toList();
     }
 
-    public Student actualizar(Long id, Student datos) {
-        Student existente = buscarPorId(id);
-        existente.setStudentName(datos.getStudentName());
-        existente.setEmail(datos.getEmail());
-        existente.setDocument(datos.getDocument());
-        if (datos.getPassword() != null && !datos.getPassword().isEmpty()) {
-            existente.setPassword(passwordHasher.hashearSiEsNecesario(datos.getPassword()));
+    public StudentDTO actualizar(Long id, StudentRequest datos) {
+        Student existente = buscarEntidadPorId(id);
+        existente.setStudentName(datos.studentName());
+        existente.setEmail(datos.email());
+        existente.setDocument(datos.document());
+        if (datos.password() != null && !datos.password().isEmpty()) {
+            existente.setPassword(passwordHasher.hashearSiEsNecesario(datos.password()));
         }
-        return studentRepository.save(existente);
+        return toDTO(studentRepository.save(existente));
     }
 
     public void eliminar(Long id) {
@@ -52,5 +62,14 @@ public class StudentService {
             throw new RuntimeException("Estudiante no encontrado");
         }
         studentRepository.deleteById(id);
+    }
+
+    private Student buscarEntidadPorId(Long id) {
+        return studentRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Estudiante no encontrado"));
+    }
+
+    private StudentDTO toDTO(Student s) {
+        return new StudentDTO(s.getId(), s.getStudentName(), s.getEmail(), s.getDocument());
     }
 }
